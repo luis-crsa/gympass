@@ -3,6 +3,7 @@ import { compare } from "bcryptjs";
 import { beforeEach, describe, expect, it } from "vitest";
 import { UserAlreadyExistsError } from "./errors/user-already-exists";
 import { RegisterUseCase } from "./register";
+import { config } from "../config";
 
 // Starts the variables
 let usersRepository: InMemoryUsersRepository;
@@ -17,11 +18,11 @@ describe("RegisterUseCase", () => {
     const { user } = await sut.execute({
       name: "John Doe",
       email: "john.doe@gmail.com",
-      password: "flamengo",
+      password: config.testUserPassword,
     });
 
     const isPasswordCorrectlyHashed = await compare(
-      "flamengo",
+      config.testUserPassword,
       user.password_hash
     );
 
@@ -34,14 +35,14 @@ describe("RegisterUseCase", () => {
     await sut.execute({
       name: "John Doe",
       email,
-      password: "flamengo",
+      password: config.testUserPassword,
     });
 
     await expect(() =>
       sut.execute({
         name: "John Doe",
         email,
-        password: "flamengo",
+        password: config.testUserPassword,
       })
     ).rejects.toBeInstanceOf(UserAlreadyExistsError);
   });
@@ -49,7 +50,7 @@ describe("RegisterUseCase", () => {
     const { user } = await sut.execute({
       name: "John Doe",
       email: "john.doe@gmail.com",
-      password: "flamengo",
+      password: config.testUserPassword,
     });
 
     expect(user.id).toEqual(expect.any(String));

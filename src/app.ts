@@ -3,7 +3,6 @@ import fastifyJwt from "@fastify/jwt";
 import fastifySwagger from "@fastify/swagger";
 import fastifySwaggerUi from "@fastify/swagger-ui";
 import fastify from "fastify";
-import { jsonSchemaTransform, serializerCompiler, validatorCompiler } from "fastify-type-provider-zod";
 import { ZodError } from "zod";
 
 import { env } from "./env";
@@ -61,9 +60,10 @@ app.setErrorHandler((error, _request, reply) => {
 
   if (env.NODE_ENV !== "production") {
     console.error(error);
-  } else {
-    // TODO: log para producao como DataDog/NewRelic/Sentry
-  }
+  } 
+  // else {
+  //   // para fazer: log para producao como DataDog/NewRelic/Sentry
+  // }
 
   return reply.status(500).send({ message: "Internal server error" });
 });

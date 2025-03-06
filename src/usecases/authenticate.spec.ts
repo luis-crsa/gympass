@@ -3,6 +3,7 @@ import { hash } from "bcryptjs";
 import { AuthenticUseCase } from "./authenticate";
 import { InMemoryUsersRepository } from "@/repositories/in-memory/users-repository";
 import { InvalidCredentialsError } from "./errors/invalid-credentials-error";
+import { config } from "../config";
 
 let usersRepository: InMemoryUsersRepository;
 let sut: AuthenticUseCase;
@@ -18,12 +19,12 @@ describe("Authenticate Use Case", () => {
     await usersRepository.create({
       name: "John Doe",
       email: "john.doe@gmail.com",
-      password_hash: await hash("flamengo", 6),
+      password_hash: await hash(config.testUserPassword, 6),
     });
 
     const { user } = await sut.execute({
       email: "john.doe@gmail.com",
-      password: "flamengo",
+      password: config.testUserPassword,
     });
 
     expect(user.id).toEqual(expect.any(String));
@@ -33,7 +34,7 @@ describe("Authenticate Use Case", () => {
     await expect(() =>
       sut.execute({
         email: "john.doe@gmail.com",
-        password: "flamego",
+        password: config.testUserPassword,
       })
     ).rejects.toBeInstanceOf(InvalidCredentialsError);
   });
@@ -48,7 +49,7 @@ describe("Authenticate Use Case", () => {
     await expect(() =>
       sut.execute({
         email: "john.doe@gmail.com",
-        password: "palmeiras",
+        password: config.testUserPassword,
       })
     ).rejects.toBeInstanceOf(InvalidCredentialsError);
   });
